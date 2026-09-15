@@ -66,7 +66,7 @@
     .agenda-item { font-size: 15px; }
     .agenda-num { font-size: 17px; width: 32px; }
     .lead-text { font-size: 14px; line-height: 1.6; margin-top: -10px; margin-bottom: 12px; color: var(--c-text-main); }
-    .lead-text a, .takeaway-text a { color: var(--th-vd); font-weight: 700; }
+    .lead-text a, .takeaway-text a, .detail-meta a, .section-note a { color: var(--th-vd); font-weight: 700; }
     .section-note { font-size: 15px; color: var(--c-text-sub); margin-top: 20px; text-align: center; }
     .step-flow { gap: 16px; }
     .step-flow.is-four { gap: 26px; flex: 1; align-items: stretch; }
@@ -169,24 +169,24 @@
         </a>
         <a class="tag-card" href="#16">
           <div class="tag-id">
-            <span class="tag-id-main">S3 <span class="pill pill-now">Studio</span></span>
-            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
-          </div>
-          <div class="tag-name">議事録をNotebookLMへ自動格納</div>
-          <div class="tag-tool">会議後に自動格納</div>
-        </a>
-        <a class="tag-card" href="#16">
-          <div class="tag-id">
             <span class="tag-id-main">S4 <span class="pill pill-now">Studio</span></span>
             <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
           </div>
           <div class="tag-name">添付の自動格納</div>
           <div class="tag-tool">ドライブへ整理保存</div>
         </a>
+        <a class="tag-card" href="#16">
+          <div class="tag-id">
+            <span class="tag-id-main">S3 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="3" aria-label="難易度 3/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">議事録をNotebookLMへ自動格納</div>
+          <div class="tag-tool">会議後に自動格納</div>
+        </a>
         <a class="tag-card" href="#17">
           <div class="tag-id">
             <span class="tag-id-main">S5 <span class="pill pill-now">Studio</span></span>
-            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+            <span class="difficulty-stars" data-level="4" aria-label="難易度 4/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
           </div>
           <div class="tag-name">会議後フォロー下書き</div>
           <div class="tag-tool">お礼・決定・次アクション</div>
@@ -614,24 +614,24 @@
         </a>
         <a class="tag-card" href="#16">
           <div class="tag-id">
-            <span class="tag-id-main">S3 <span class="pill pill-now">Studio</span></span>
-            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
-          </div>
-          <div class="tag-name">議事録をNotebookLMへ自動格納</div>
-          <div class="tag-tool">会議後に自動格納</div>
-        </a>
-        <a class="tag-card" href="#16">
-          <div class="tag-id">
             <span class="tag-id-main">S4 <span class="pill pill-now">Studio</span></span>
             <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
           </div>
           <div class="tag-name">添付の自動格納</div>
           <div class="tag-tool">ドライブへ整理保存</div>
         </a>
+        <a class="tag-card" href="#16">
+          <div class="tag-id">
+            <span class="tag-id-main">S3 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="3" aria-label="難易度 3/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">議事録をNotebookLMへ自動格納</div>
+          <div class="tag-tool">会議後に自動格納</div>
+        </a>
         <a class="tag-card" href="#17">
           <div class="tag-id">
             <span class="tag-id-main">S5 <span class="pill pill-now">Studio</span></span>
-            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+            <span class="difficulty-stars" data-level="4" aria-label="難易度 4/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
           </div>
           <div class="tag-name">会議後フォロー下書き</div>
           <div class="tag-tool">お礼・決定・次アクション</div>
@@ -696,7 +696,7 @@
     <div class="section-cover">
       <div class="section-num">APPENDIX</div>
       <div class="section-title">詳細（見たい人だけ）</div>
-      <div class="section-note">S1〜S5 は Workspace Studio、G1〜G5 は GAS。作る前に揃えるもの（PREP / TRIGGER / OUTPUT）付き。</div>
+      <div class="section-note">S1〜S5 は <a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">Google Workspace Studio</a>、G1〜G5 は GAS。作る前に揃えるもの（PREP / TRIGGER / OUTPUT）付き。</div>
     </div>
     <div class="slide-footer">
       <div>ピザ会</div>
@@ -716,7 +716,7 @@
         <div class="detail-card" id="S1">
           <div class="detail-id">S1 <span class="pill pill-now">Studio</span></div>
           <div class="detail-title">メールの自動タグ付け（ラベル自動分類）</div>
-          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-meta"><a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">Google Workspace Studio</a></p>
           <p class="detail-body">受信したメールの内容や送信者をAIが解析し、重要度や案件別・カテゴリ別に自動でラベル（タグ）を付与します。手動での仕分け作業が不要になり、フォルダ整理の手間を削減できます。</p>
           <dl class="pto">
             <dt>PREP <span>事前準備（何を参照するか）</span></dt>
@@ -736,7 +736,7 @@
         <div class="detail-card" id="S2">
           <div class="detail-id">S2 <span class="pill pill-now">Studio</span></div>
           <div class="detail-title">お問い合わせ内容の傾向分析と定期レポート作成</div>
-          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-meta"><a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">Google Workspace Studio</a></p>
           <p class="detail-body">日々届く問い合わせメールを集約・解析し、「どのような質問が多いか」「顧客の課題は何か」などのトレンドを要約して定期報告します。顧客の声を素早く把握し、サービス改善やFAQ作成に活かせます。</p>
           <dl class="pto">
             <dt>PREP <span>事前準備（何を参照するか）</span></dt>
@@ -773,7 +773,7 @@
         <div class="detail-card" id="S3">
           <div class="detail-id">S3 <span class="pill pill-now">Studio</span></div>
           <div class="detail-title">議事録をNotebookLMへ自動格納</div>
-          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-meta"><a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">Google Workspace Studio</a></p>
           <p class="detail-body">会議後の議事録を、指定の NotebookLM ノートへソースとして追加します。あとから決定事項や宿題をノート上で質問できます。</p>
           <dl class="pto">
             <dt>PREP <span>事前準備（何を参照するか）</span></dt>
@@ -794,7 +794,7 @@
         <div class="detail-card" id="S4">
           <div class="detail-id">S4 <span class="pill pill-now">Studio</span></div>
           <div class="detail-title">添付ファイルのGoogleドライブ自動格納</div>
-          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-meta"><a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">Google Workspace Studio</a></p>
           <p class="detail-body">メールで届いた見積書や請求書などの添付ファイルを、指定したGoogleドライブのフォルダへ自動で整理・保存します。ダウンロードの手間を省き、ファイルの紛失や保存忘れを防ぎます。</p>
           <dl class="pto">
             <dt>PREP <span>事前準備（何を参照するか）</span></dt>
@@ -832,7 +832,7 @@
         <div class="detail-card" id="S5">
           <div class="detail-id">S5 <span class="pill pill-now">Studio</span></div>
           <div class="detail-title">会議後のフォローアップメール下書き自動作成</div>
-          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-meta"><a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">Google Workspace Studio</a></p>
           <p class="detail-body">クライアントとの打合せメモや議事録の文脈を読み取り、お礼・決定事項・次回アクションをまとめたメールの下書きを自動生成します。ゼロから文章を作る時間を短縮し、迅速なフォローを可能にします。</p>
           <dl class="pto">
             <dt>PREP <span>事前準備（何を参照するか）</span></dt>
