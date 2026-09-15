@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIで実践する前に｜ピザ会</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="deck.css">
+<style>
+    .ex-list { list-style: none; padding: 0; margin: 12px 0 0; border-top: 1px dotted var(--th-l); padding-top: 10px; }
+    .ex-list li { font-size: 12.5px; line-height: 1.5; margin-bottom: 4px; color: var(--c-text-sub); }
+    .ex-list li strong { color: var(--c-text-main); font-weight: 700; }
+    .tag-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 10px 0 15px; }
+    .tag-grid.is-compact { margin: 4px 0 8px; gap: 8px; flex: 1; align-content: start; }
+    .tag-grid.is-compact .tag-card { min-height: 86px; padding: 10px 10px 8px; }
+    .tag-grid.is-compact .tag-name { font-size: 12.5px; margin-bottom: 6px; }
+    .tag-card {
+      background: var(--th-vl); border: 1px solid var(--th-l); border-radius: 6px;
+      padding: 12px 12px 10px; text-decoration: none; color: var(--c-text-main);
+      display: flex; flex-direction: column; min-height: 104px; cursor: pointer;
+    }
+    .tag-card:hover { border-color: var(--th-base); background: var(--c-white); }
+    .tag-id { font-size: 10px; font-weight: 900; color: var(--th-base); letter-spacing: 0.08em; margin-bottom: 6px; }
+    .tag-name { font-size: 13.5px; font-weight: 700; line-height: 1.4; margin-bottom: 8px; }
+    .tag-tool { font-size: 10.5px; color: var(--c-text-sub); margin-top: auto; line-height: 1.4; }
+    .pill { display: inline-block; border-radius: 12px; padding: 2px 10px; font-size: 10px; font-weight: 900; letter-spacing: 0.05em; }
+    .pill-now { background: var(--c-leaf-base); color: var(--c-white); }
+    .pill-chk { background: #E8B422; color: #4a3200; }
+    .tag-id { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .tag-id-main { white-space: nowrap; }
+    .difficulty-stars { display: inline-flex; gap: 0; flex-shrink: 0; margin-left: auto; }
+    .difficulty-stars .star { font-size: 8.5px; line-height: 1; color: #ddd5dc; }
+    .difficulty-stars .star::before { content: "★"; }
+    .difficulty-stars[data-level="1"] .star:nth-child(-n+1),
+    .difficulty-stars[data-level="2"] .star:nth-child(-n+2),
+    .difficulty-stars[data-level="3"] .star:nth-child(-n+3),
+    .difficulty-stars[data-level="4"] .star:nth-child(-n+4) {
+      color: #E8B422;
+      text-shadow: 0 0 3px rgba(232, 180, 34, 0.55);
+    }
+    .detail-wrap { display: flex; gap: 22px; margin-bottom: 8px; flex: 1; min-height: 0; }
+    .detail-card {
+      flex: 1; background: var(--c-white); border: 1px solid #e2e8f0; border-top: 5px solid var(--th-base);
+      border-radius: 4px; padding: 18px 20px;
+      overflow-y: auto; overscroll-behavior: contain; min-height: 0;
+      scrollbar-color: var(--th-base) var(--th-vl);
+      box-shadow: inset 0 -22px 26px -26px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .detail-body { font-size: 13px; line-height: 1.7; color: var(--c-text-main); margin: 8px 0 0; }
+    .detail-id { font-size: 10px; font-weight: 900; color: var(--th-base); letter-spacing: 0.08em; margin-bottom: 5px; }
+    .detail-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+    .detail-meta { font-size: 11.5px; line-height: 1.6; color: var(--c-text-sub); margin: 0 0 6px; }
+    .slide-content.is-detail { min-height: 0; }
+    .pto { margin: 10px 0 0; padding-top: 9px; border-top: 1px dotted var(--th-l); }
+    .pto dt { font-size: 10px; font-weight: 900; color: var(--th-base); letter-spacing: 0.08em; margin-top: 9px; }
+    .pto dt:first-of-type { margin-top: 0; }
+    .pto dt span { margin-left: 6px; font-weight: 700; letter-spacing: 0; color: var(--c-text-sub); }
+    .pto dd { margin: 3px 0 0; font-size: 11.5px; line-height: 1.55; color: var(--c-text-main); }
+    .pto ul { list-style: none; padding: 0; margin: 0; }
+    .pto li { position: relative; padding-left: 12px; margin-bottom: 2px; }
+    .pto li::before { content: "・"; position: absolute; left: -1px; color: var(--th-base); }
+    .check-list { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 10px; }
+    .check-list li { font-size: 14px; line-height: 1.5; padding-left: 26px; position: relative; }
+    .check-list li::before { content: "☑"; position: absolute; left: 0; color: var(--th-base); font-size: 16px; font-weight: 900; }
+    .agenda-list { gap: 8px; }
+    .agenda-item { font-size: 15px; }
+    .agenda-num { font-size: 17px; width: 32px; }
+    .lead-text { font-size: 14px; line-height: 1.6; margin-top: -10px; margin-bottom: 12px; color: var(--c-text-main); }
+    .lead-text a, .takeaway-text a { color: var(--th-vd); font-weight: 700; }
+    .section-note { font-size: 15px; color: var(--c-text-sub); margin-top: 20px; text-align: center; }
+    .step-flow { gap: 16px; }
+    .step-flow.is-four { gap: 26px; flex: 1; align-items: stretch; }
+    .step-flow.is-four .step-item { padding: 16px 16px 14px; }
+    .step-flow.is-four .step-title { font-size: 16px; margin-bottom: 8px; }
+    .step-flow.is-four .step-desc { font-size: 12.5px; }
+    .step-flow.is-four .step-item:not(:last-child)::after { right: -20px; }
+    .hud-meta { display: none; }
+    .studio-split { display: flex; gap: 16px; flex: 1; min-height: 0; align-items: stretch; }
+    .studio-shot-wrap { flex: 1.2; display: flex; flex-direction: column; min-width: 0; }
+    .studio-shot {
+      width: 100%; flex: 1; min-height: 0;
+      object-fit: cover; object-position: 50% 12%;
+      border-radius: 8px; border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+    .studio-caption { font-size: 12px; font-weight: 700; color: var(--th-vd); margin-top: 8px; line-height: 1.5; }
+    .studio-steps { flex: 0.95; display: flex; flex-direction: column; gap: 8px; min-width: 0; justify-content: center; }
+    .studio-steps .step-item { flex: 0 0 auto; padding: 10px 12px; border-top-width: 3px; }
+    .studio-steps .step-num { font-size: 11px; margin-bottom: 2px; }
+    .studio-steps .step-title { font-size: 15px; margin-bottom: 4px; }
+    .studio-steps .step-desc { font-size: 12px; line-height: 1.45; }
+    .studio-steps .step-item::after { content: none; }
+    .studio-shot.is-right { object-position: 100% 12%; }
+    .studio-shot.is-left { object-position: 0% 12%; }
+
+</style>
+</head>
+<body>
+  <div class="stage" id="stage">
+
+  <!-- ==============================================
+       Slide 1: 表紙 (Salmon Red)
+       ============================================== -->
+  <div class="slide theme-salmon">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-content" style="padding-top: 50px;">
+      <div class="cover-client">ピザ会</div>
+      <div class="cover-title">AIで実践する前に</div>
+      <div class="cover-subtitle">コードは書かず、AIで実装する。</div>
+
+      <div class="cover-bottom">
+        <div class="cover-author">システム開発部開発チーム</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 2: 目次 (Gold Yellow)
+       ============================================== -->
+  <div class="slide theme-gold">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>本日の流れ</h2>
+    </div>
+    <div class="slide-content">
+      <ul class="agenda-list">
+        <li class="agenda-item"><span class="agenda-num">01</span> 自動化出来るもの</li>
+        <li class="agenda-item"><span class="agenda-num">02</span> 仕事を3つに分ける</li>
+        <li class="agenda-item"><span class="agenda-num">03</span> studioとGASの操作方法</li>
+        <li class="agenda-item"><span class="agenda-num">04</span> 実装の途中で出る確認 / やってよいこと・NG</li>
+        <li class="agenda-item"><span class="agenda-num">05</span> 挑戦するものを1つ選ぶ</li>
+      </ul>
+      <div class="takeaway">
+        <div class="takeaway-title">目標</div>
+        <div class="takeaway-text">この説明が終わった後、制限時間45分以内で、1つ実装して頂きます。</div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 3: 自動化出来るもの (Sweet Pink)
+       ============================================== -->
+  <div class="slide theme-pink">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>自動化出来るもの</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">本日挑戦できる自動化の一覧です。あとで1つ選んで、45分以内に実装します。</p>
+      <div class="tag-grid is-compact">
+        <a class="tag-card" href="#15">
+          <div class="tag-id">
+            <span class="tag-id-main">S1 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">メールの自動タグ付け</div>
+          <div class="tag-tool">ラベル自動分類</div>
+        </a>
+        <a class="tag-card" href="#15">
+          <div class="tag-id">
+            <span class="tag-id-main">S2 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">問い合わせの傾向分析</div>
+          <div class="tag-tool">定期レポート作成</div>
+        </a>
+        <a class="tag-card" href="#16">
+          <div class="tag-id">
+            <span class="tag-id-main">S3 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">議事録をNotebookLMへ自動格納</div>
+          <div class="tag-tool">会議後に自動格納</div>
+        </a>
+        <a class="tag-card" href="#16">
+          <div class="tag-id">
+            <span class="tag-id-main">S4 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">添付の自動格納</div>
+          <div class="tag-tool">ドライブへ整理保存</div>
+        </a>
+        <a class="tag-card" href="#17">
+          <div class="tag-id">
+            <span class="tag-id-main">S5 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">会議後フォロー下書き</div>
+          <div class="tag-tool">お礼・決定・次アクション</div>
+        </a>
+        <a class="tag-card" href="#18">
+          <div class="tag-id">
+            <span class="tag-id-main">G1 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">複数シートの自動集計</div>
+          <div class="tag-tool">マスターへ統合</div>
+        </a>
+        <a class="tag-card" href="#18">
+          <div class="tag-id">
+            <span class="tag-id-main">G2 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="3" aria-label="難易度 3/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">申請・承認の自動化</div>
+          <div class="tag-tool">フォーム連動</div>
+        </a>
+        <a class="tag-card" href="#19">
+          <div class="tag-id">
+            <span class="tag-id-main">G3 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">アジェンダ自動生成</div>
+          <div class="tag-tool">定例の事前共有</div>
+        </a>
+        <a class="tag-card" href="#19">
+          <div class="tag-id">
+            <span class="tag-id-main">G4 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">期限リマインド送信</div>
+          <div class="tag-tool">未完了者だけ催促</div>
+        </a>
+        <a class="tag-card" href="#17">
+          <div class="tag-id">
+            <span class="tag-id-main">G5 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="3" aria-label="難易度 3/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">Googleフォームの自動受付制御（定員・期限）</div>
+          <div class="tag-tool">定員・期限で受付を止める</div>
+        </a>
+      </div>
+
+      <div class="takeaway">
+        <div class="takeaway-text">星が多いほど、難易度が高いものとなっています</div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 4: 問い (Leaf Green)
+       ============================================== -->
+  <div class="slide statement theme-leaf is-centered">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="mega-text">AIを使う前に、いまの仕事を分解する。</div>
+  </div>
+
+  <!-- ==============================================
+       Slide 5: 仕事を3つに分ける (Turquoise)
+       ============================================== -->
+  <div class="slide theme-turq">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>仕事を3つに分ける</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">この3つを書き出せば、AIに渡す設計図になります。</p>
+
+      <div class="card-wrap">
+        <div class="card">
+          <div class="card-label">PREP / 事前準備</div>
+          <div class="card-title">何を参照するか</div>
+          <div class="card-desc">参照すべき正しい情報を集める。</div>
+          <ul class="ex-list">
+            <li><strong>問い合わせ対応</strong> … FAQ・回答方針</li>
+            <li><strong>打ち合わせ</strong> … 案件フォルダ</li>
+            <li><strong>週次の数字</strong> … 集計用シート</li>
+            <li><strong>手順の更新</strong> … 現行マニュアル</li>
+            <li><strong>比較検討</strong> … 過去資料＋公開情報</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-label">TRIGGER / きっかけ</div>
+          <div class="card-title">いつ始まるか</div>
+          <div class="card-desc">何が起きたら仕事が始まるか。</div>
+          <ul class="ex-list">
+            <li><strong>問い合わせ対応</strong> … メールが来る</li>
+            <li><strong>打ち合わせ</strong> … 会議が終わる</li>
+            <li><strong>週次の数字</strong> … 月曜の朝</li>
+            <li><strong>手順の更新</strong> … やり方が変わる</li>
+            <li><strong>比較検討</strong> … 「調べて」と頼まれる</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-label">OUTPUT / 出力</div>
+          <div class="card-title">何ができあがるか</div>
+          <div class="card-desc">成果物ができる。</div>
+          <ul class="ex-list">
+            <li><strong>問い合わせ対応</strong> … 返信下書き</li>
+            <li><strong>打ち合わせ</strong> … 要約と宿題</li>
+            <li><strong>週次の数字</strong> … ダッシュボード</li>
+            <li><strong>手順の更新</strong> … 改訂版ドキュメント</li>
+            <li><strong>比較検討</strong> … 比較表</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 6: AIで実装するまでの4つの手順 (Leaf Green)
+       ============================================== -->
+  <div class="slide theme-leaf">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>AIで実装するまでの4つの手順</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">studioとGASの操作方法</p>
+
+      <div class="step-flow is-four">
+        <div class="step-item" style="border-color: var(--th-l);">
+          <div class="step-num" style="color: var(--th-l);">STEP 01</div>
+          <div class="step-title">説明する</div>
+          <div class="step-desc">設計図の3点（参照先・きっかけ・出力）を日本語で書いて、Gemini（AI）に渡す。</div>
+        </div>
+        <div class="step-item" style="border-color: var(--th-base);">
+          <div class="step-num" style="color: var(--th-base);">STEP 02</div>
+          <div class="step-title">生成させる</div>
+          <div class="step-desc">フローの設定内容やコードは、AIに作ってもらう。</div>
+        </div>
+        <div class="step-item" style="border-color: var(--th-d);">
+          <div class="step-num" style="color: var(--th-d);">STEP 03</div>
+          <div class="step-title">確認させる</div>
+          <div class="step-desc">設定やコードをAIに確認させる（「なぜその設定か説明して」など）。テスト実行で、想定どおりの出力か確かめる。</div>
+        </div>
+        <div class="step-item" style="border-color: var(--th-vd);">
+          <div class="step-num" style="color: var(--th-vd);">STEP 04</div>
+          <div class="step-title">動かす</div>
+          <div class="step-desc">オンにする、または保存して定期実行にする。ここまでで完成。</div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <div class="takeaway-title">TIP</div>
+        <div class="takeaway-text">STEP 03の結果が期待どおりでなくても、やることは同じです。<br>いまの状況を説明し（画面のスクショを共有）、生成させて確認する。</div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 7: GWS Studio：Geminiに説明して、フローを作る (Leaf Green)
+       ============================================== -->
+  <div class="slide theme-leaf">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>GWS Studio：Geminiに説明して、フローを作る</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">コードは書きません。<a href="https://studio.workspace.google.com/" target="_blank" rel="noopener">studio.workspace.google.com</a> を開き、下の入力欄に日本語で書くとフローができます。</p>
+
+      <div class="studio-split">
+        <div class="studio-shot-wrap">
+          <img class="studio-shot" src="studio-gemini-input.png" alt="Workspace Studioの「Gemini にタスクを説明」入力欄">
+          <div class="studio-caption">赤枠：「Gemini にタスクを説明」に書いて、右の「作成」を押す</div>
+        </div>
+        <div class="studio-steps">
+          <div class="step-item" style="border-color: var(--th-l);">
+            <div class="step-num" style="color: var(--th-l);">STEP 01</div>
+            <div class="step-title">Studioを開く</div>
+            <div class="step-desc">おすすめのテンプレート一覧もここで見られます。</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-base);">
+            <div class="step-num" style="color: var(--th-base);">STEP 02</div>
+            <div class="step-title">AIに対して説明する</div>
+            <div class="step-desc">「何が起きたら、何をしてほしいか」を1文で。例：未読メールを朝に要約してChatへ。</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-d);">
+            <div class="step-num" style="color: var(--th-d);">STEP 03</div>
+            <div class="step-title">フローが自動作成される</div>
+            <div class="step-desc">「作成」を押すと、開始条件とステップが自動で出てきます。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 8: GWS Studio：詳細を設定して、オンにする (Leaf Green)
+       ============================================== -->
+  <div class="slide theme-leaf">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>GWS Studio：詳細を設定して、オンにする</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">フローができたら、右側で条件を整え、テストしてからオンにします。</p>
+
+      <div class="studio-split">
+        <div class="studio-shot-wrap">
+          <img class="studio-shot is-right" src="studio-flow-settings.jpg" alt="Workspace Studioのフロー設定画面。詳細・テスト実行・オンにする">
+          <div class="studio-caption">①詳細を設定　②テスト実行　③オンにする</div>
+        </div>
+        <div class="studio-steps">
+          <div class="step-item" style="border-color: var(--th-l);">
+            <div class="step-num" style="color: var(--th-l);">STEP 01</div>
+            <div class="step-title">詳細を設定する</div>
+            <div class="step-desc">開始条件や対象メールなど、右側の項目を確認して整える。</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-base);">
+            <div class="step-num" style="color: var(--th-base);">STEP 02</div>
+            <div class="step-title">テスト実行で確認する</div>
+            <div class="step-desc">テスト内容を入力して、想定通り動くか確認する。</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-d);">
+            <div class="step-num" style="color: var(--th-d);">STEP 03</div>
+            <div class="step-title">オンにする</div>
+            <div class="step-desc">問題なければ「オンにする」を押して、フローを有効化する。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 9: GAS：Apps Scriptはどこから開くか (Orchid Purple)
+       ============================================== -->
+  <div class="slide theme-orchid">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>GAS：Apps Scriptはどこから開くか</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">いま開いているファイルから入ります。赤い枠の「Apps Script」です。</p>
+
+      <div class="studio-split">
+        <div class="studio-shot-wrap">
+          <img class="studio-shot is-right" src="gas-apps-script-menu.jpg" alt="フォーム・ドキュメント・スプレッドシートのメニューから Apps Script を開く画面">
+          <div class="studio-caption">赤枠：メニューの「Apps Script」を押す</div>
+        </div>
+        <div class="studio-steps">
+          <div class="step-item" style="border-color: var(--th-l);">
+            <div class="step-num" style="color: var(--th-l);">FORMS</div>
+            <div class="step-title">フォーム</div>
+            <div class="step-desc">右上「︙」→ Apps Script</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-base);">
+            <div class="step-num" style="color: var(--th-base);">DOCS</div>
+            <div class="step-title">ドキュメント</div>
+            <div class="step-desc">拡張機能 → Apps Script</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-d);">
+            <div class="step-num" style="color: var(--th-d);">SHEETS</div>
+            <div class="step-title">スプレッドシート</div>
+            <div class="step-desc">拡張機能 → Apps Script</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 10: GAS：コードを貼って、保存または実行 (Orchid Purple)
+       ============================================== -->
+  <div class="slide theme-orchid">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>GAS：コードを貼って、保存または実行</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">コードは自分で書かなくて構いません。Geminiに作ってもらい、赤枠へ貼って保存／実行します。</p>
+
+      <div class="studio-split">
+        <div class="studio-shot-wrap">
+          <img class="studio-shot is-left" src="gas-editor-input.jpg" alt="Apps Scriptのコード編集画面。赤い枠が貼り付け場所">
+          <div class="studio-caption">赤枠：生成したコードを貼る場所</div>
+        </div>
+        <div class="studio-steps">
+          <div class="step-item" style="border-color: var(--th-l);">
+            <div class="step-num" style="color: var(--th-l);">STEP 01</div>
+            <div class="step-title">Geminiに生成してもらう</div>
+            <div class="step-desc">やりたいことを日本語で伝え、GASの内容を作ってもらう。</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-base);">
+            <div class="step-num" style="color: var(--th-base);">STEP 02</div>
+            <div class="step-title">赤枠にコピペする</div>
+            <div class="step-desc">既に入力されている内容は削除する。<br>削除後、geminiの内容を貼り付ける。</div>
+          </div>
+          <div class="step-item" style="border-color: var(--th-d);">
+            <div class="step-num" style="color: var(--th-d);">STEP 03</div>
+            <div class="step-title">保存するまたは実行する</div>
+            <div class="step-desc">上の保存（ディスク）か実行（再生）を押す。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 11: 実装の途中で出る確認 (Leaf Green)
+       ============================================== -->
+  <div class="slide theme-leaf">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>実装の途中で出る確認</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">実装中に権限の確認や注意が表示されても、社内で自分の作業なら想定どおりのことが多いです。落ち着いて中身を見て進めてください。</p>
+
+      <div class="contrast-wrap" style="flex: 1;">
+        <div class="contrast-box contrast-solution">
+          <div class="contrast-title">Workspace Studio</div>
+          <ul class="check-list">
+            <li>オンにする前に「テスト実行」が出る → 先に試してからオンにしてOK</li>
+            <li>「このフローを実行しますか」など確認が出る → 内容を見て問題なければ進めてOK</li>
+            <li>権限が足りない、と出る → 自分のメール／ドライブなら、許可して続けてOKなことが多い</li>
+          </ul>
+        </div>
+        <div class="contrast-box contrast-solution">
+          <div class="contrast-title">GAS</div>
+          <ul class="check-list">
+            <li>初回に Google の許可画面（「アクセスを許可」）が出る → 自分のスクリプトなら、本人が許可してOK</li>
+            <li>権限の一覧が長く見える → シートやフォームを読む／書くために必要な範囲</li>
+            <li>実行ログにエラーが出る → エラー内容（画面のスクショ）をgeminiに共有して、再度テストする。</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 12: やってよい / NG (Salmon Red)
+       ============================================== -->
+  <div class="slide theme-salmon">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>やってよいこと / NGなもの</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">迷ったら入力しない、が原則です。判断に困る場合は佐藤さんや開発チームへ相談してください。</p>
+
+      <div class="contrast-wrap">
+        <div class="contrast-box contrast-solution">
+          <div class="contrast-title">OK やってよい</div>
+          <ul class="contrast-list">
+            <li>公開されている情報、自分で書いた文章</li>
+            <li>調べもの、たたき台づくり、翻訳、要約、言い換え</li>
+            <li>使い方が分からないツールの操作方法を聞く</li>
+          </ul>
+        </div>
+
+        <div class="contrast-box contrast-issue">
+          <div class="contrast-title">NGなもの</div>
+          <ul class="contrast-list">
+            <li>自治体・取引先から受け取った未公開資料、NDAの対象文書</li>
+            <li>首長・政治家・秘書の、非公開の連絡先や住所を含むリスト</li>
+            <li>公表前の調査データ、未公表の選挙関連データなど</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <div class="takeaway-title">GOVERNANCE</div>
+        <div class="takeaway-text">AIに読み込ませてよいものや、活用する際の確認は <a href="https://script.google.com/a/macros/senkyo-com.jp/s/AKfycbzHhHuJ2XfGyElfOYj-_iGYov6SiLoUzDY0APab3ZXCPdizKiwhDgKfjG04bnLmCar-/exec" target="_blank" rel="noopener">AI利用チェックリスト</a> で行いましょう。</div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 13: 挑戦するものを一つ選んでください (Sweet Pink)
+       ============================================== -->
+  <div class="slide theme-pink">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>挑戦するものを一つ選んでください</h2>
+    </div>
+    <div class="slide-content">
+      <p class="lead-text">説明は以上です。ここから制限時間45分で、1つ選んで実装に入ります。</p>
+      <div class="tag-grid is-compact">
+        <a class="tag-card" href="#15">
+          <div class="tag-id">
+            <span class="tag-id-main">S1 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">メールの自動タグ付け</div>
+          <div class="tag-tool">ラベル自動分類</div>
+        </a>
+        <a class="tag-card" href="#15">
+          <div class="tag-id">
+            <span class="tag-id-main">S2 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">問い合わせの傾向分析</div>
+          <div class="tag-tool">定期レポート作成</div>
+        </a>
+        <a class="tag-card" href="#16">
+          <div class="tag-id">
+            <span class="tag-id-main">S3 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="1" aria-label="難易度 1/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">議事録をNotebookLMへ自動格納</div>
+          <div class="tag-tool">会議後に自動格納</div>
+        </a>
+        <a class="tag-card" href="#16">
+          <div class="tag-id">
+            <span class="tag-id-main">S4 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">添付の自動格納</div>
+          <div class="tag-tool">ドライブへ整理保存</div>
+        </a>
+        <a class="tag-card" href="#17">
+          <div class="tag-id">
+            <span class="tag-id-main">S5 <span class="pill pill-now">Studio</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">会議後フォロー下書き</div>
+          <div class="tag-tool">お礼・決定・次アクション</div>
+        </a>
+        <a class="tag-card" href="#18">
+          <div class="tag-id">
+            <span class="tag-id-main">G1 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">複数シートの自動集計</div>
+          <div class="tag-tool">マスターへ統合</div>
+        </a>
+        <a class="tag-card" href="#18">
+          <div class="tag-id">
+            <span class="tag-id-main">G2 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="3" aria-label="難易度 3/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">申請・承認の自動化</div>
+          <div class="tag-tool">フォーム連動</div>
+        </a>
+        <a class="tag-card" href="#19">
+          <div class="tag-id">
+            <span class="tag-id-main">G3 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">アジェンダ自動生成</div>
+          <div class="tag-tool">定例の事前共有</div>
+        </a>
+        <a class="tag-card" href="#19">
+          <div class="tag-id">
+            <span class="tag-id-main">G4 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="2" aria-label="難易度 2/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">期限リマインド送信</div>
+          <div class="tag-tool">未完了者だけ催促</div>
+        </a>
+        <a class="tag-card" href="#17">
+          <div class="tag-id">
+            <span class="tag-id-main">G5 <span class="pill pill-chk">GAS</span></span>
+            <span class="difficulty-stars" data-level="3" aria-label="難易度 3/4"><span class="star"></span><span class="star"></span><span class="star"></span><span class="star"></span></span>
+          </div>
+          <div class="tag-name">Googleフォームの自動受付制御（定員・期限）</div>
+          <div class="tag-tool">定員・期限で受付を止める</div>
+        </a>
+      </div>
+
+      <div class="takeaway">
+        <div class="takeaway-title">ASK</div>
+        <div class="takeaway-text">制限時間45分以内で挑戦する内容を1つ選びましょう。詳細はカードをタップすると見られます。<br>この中になくても、挑戦したいものがあればそれでも構いません。開発チームが、実装できるよう全力でサポートします。</div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 14: 付録 中表紙 (Gold Yellow)
+       ============================================== -->
+  <div class="slide theme-gold">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="section-cover">
+      <div class="section-num">APPENDIX</div>
+      <div class="section-title">詳細（見たい人だけ）</div>
+      <div class="section-note">S1〜S5 は Workspace Studio、G1〜G5 は GAS。作る前に揃えるもの（PREP / TRIGGER / OUTPUT）付き。</div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 15: 詳細 S1 / S2 (theme-turq)
+       ============================================== -->
+  <div class="slide theme-turq">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>詳細 S1 / S2</h2>
+    </div>
+    <div class="slide-content is-detail">
+      <div class="detail-wrap">
+        <div class="detail-card" id="S1">
+          <div class="detail-id">S1 <span class="pill pill-now">Studio</span></div>
+          <div class="detail-title">メールの自動タグ付け（ラベル自動分類）</div>
+          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-body">受信したメールの内容や送信者をAIが解析し、重要度や案件別・カテゴリ別に自動でラベル（タグ）を付与します。手動での仕分け作業が不要になり、フォルダ整理の手間を削減できます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>使用するラベル一覧（例：問い合わせ／社内／緊急）</li>
+                <li>分類ルール（含めるキーワード／除外条件）</li>
+                <li>対象インボックス（自分のみ／共有トレイ）</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>メール受信時（または過去メール一括処理の実行時）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>対象メールへの自動ラベル付与</dd>
+          </dl>
+        </div>
+        <div class="detail-card" id="S2">
+          <div class="detail-id">S2 <span class="pill pill-now">Studio</span></div>
+          <div class="detail-title">お問い合わせ内容の傾向分析と定期レポート作成</div>
+          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-body">日々届く問い合わせメールを集約・解析し、「どのような質問が多いか」「顧客の課題は何か」などのトレンドを要約して定期報告します。顧客の声を素早く把握し、サービス改善やFAQ作成に活かせます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>対象メールの判定条件（件名／ラベル）</li>
+                <li>集計対象期間（過去1週間／過去1ヶ月など）</li>
+                <li>分析の切り口（カテゴリ別件数／よくある質問の抽出／ポジネガ判定）</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>指定の集計日時（例：毎週月曜朝）または手動実行</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>Googleドキュメント／スプレッドシートへの分析レポート</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 16: 詳細 S3 / S4 (theme-orchid)
+       ============================================== -->
+  <div class="slide theme-orchid">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>詳細 S3 / S4</h2>
+    </div>
+    <div class="slide-content is-detail">
+      <div class="detail-wrap">
+        <div class="detail-card" id="S3">
+          <div class="detail-id">S3 <span class="pill pill-now">Studio</span></div>
+          <div class="detail-title">議事録をNotebookLMへ自動格納</div>
+          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-body">会議後の議事録を、指定の NotebookLM ノートへソースとして追加します。あとから決定事項や宿題をノート上で質問できます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>対象の会議</li>
+                <li>議事録の置き場</li>
+                <li>格納先ノート</li>
+                <li>ファイル名（日付＋会議名）</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>議事録の作成・更新時（または会議終了後）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>指定フォルダへ格納し、NotebookLM のソースとして使える状態にする</dd>
+          </dl>
+        </div>
+        <div class="detail-card" id="S4">
+          <div class="detail-id">S4 <span class="pill pill-now">Studio</span></div>
+          <div class="detail-title">添付ファイルのGoogleドライブ自動格納</div>
+          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-body">メールで届いた見積書や請求書などの添付ファイルを、指定したGoogleドライブのフォルダへ自動で整理・保存します。ダウンロードの手間を省き、ファイルの紛失や保存忘れを防ぎます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>対象とする添付ファイルの種類（見積・請求書／拡張子）</li>
+                <li>ファイル名の命名ルール（例：【受信日】+元ファイル名）</li>
+                <li>同名ファイルが存在する場合の処理（上書き／別名保存／スキップ）</li>
+                <li>保存先フォルダのURLと編集権限</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>対象となる添付ファイル付きメールの受信</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>指定の共有ドライブフォルダへのファイル格納（リネーム済）</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 17: 詳細 S5 / G5 (theme-leaf)
+       ============================================== -->
+  <div class="slide theme-leaf">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>詳細 S5 / G5</h2>
+    </div>
+    <div class="slide-content is-detail">
+      <div class="detail-wrap">
+        <div class="detail-card" id="S5">
+          <div class="detail-id">S5 <span class="pill pill-now">Studio</span></div>
+          <div class="detail-title">会議後のフォローアップメール下書き自動作成</div>
+          <p class="detail-meta">Google Workspace Studio</p>
+          <p class="detail-body">クライアントとの打合せメモや議事録の文脈を読み取り、お礼・決定事項・次回アクションをまとめたメールの下書きを自動生成します。ゼロから文章を作る時間を短縮し、迅速なフォローを可能にします。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>議事メモの置き場（Googleドキュメント等）</li>
+                <li>宛先ルール（参加者全員／特定グループ）</li>
+                <li>メールのトーン＆マナー（社外向け丁寧／社内向け簡潔）</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>会議終了後（または議事メモ作成後）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>Gmail上のメール下書き（Draft）作成（※自動送信はしない）</dd>
+          </dl>
+        </div>
+        <div class="detail-card" id="G5">
+          <div class="detail-id">G5 <span class="pill pill-chk">GAS</span></div>
+          <div class="detail-title">Googleフォームの自動受付制御（定員・期限）</div>
+          <p class="detail-meta">Google Apps Script</p>
+          <p class="detail-body">回答数が定員に達した、または受付期限を過ぎたタイミングで、Googleフォームの受付を自動で停止します。手動で閉じ忘れる心配がなくなり、先着順の申し込みや期限内の申請を正確に運用できます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>対象のGoogleフォーム</li>
+                <li>締め切り条件（定員数の上限／期限日時）</li>
+                <li>受付停止後に画面表示する案内文</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>回答数が定員に到達した瞬間、または指定日時が到来した瞬間</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>フォームの受付停止処理および指定案内文の自動表示</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 18: 詳細 G1 / G2 (theme-sky)
+       ============================================== -->
+  <div class="slide theme-sky">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>詳細 G1 / G2</h2>
+    </div>
+    <div class="slide-content is-detail">
+      <div class="detail-wrap">
+        <div class="detail-card" id="G1">
+          <div class="detail-id">G1 <span class="pill pill-chk">GAS</span></div>
+          <div class="detail-title">複数スプレッドシートのデータ自動集計・統合</div>
+          <p class="detail-meta">Google Apps Script</p>
+          <p class="detail-body">各部署や担当者が個別に入力している複数のスプレッドシートのデータを、毎日決まった時間に自動で1つのマスターシートに集約します。月末の手作業でのコピペや、集計ミスを完全に無くすことができます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>元シートの一覧とURL（列の項目名や順序が揃っているか）</li>
+                <li>集約方式（全削除して上書き／末尾に新規行を追記）</li>
+                <li>自身のGoogleアカウントの編集権限</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>指定の実行タイミング（例：毎日深夜2時などのタイマー実行）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>集約先マスターシートへのデータ統合・更新</dd>
+          </dl>
+        </div>
+        <div class="detail-card" id="G2">
+          <div class="detail-id">G2 <span class="pill pill-chk">GAS</span></div>
+          <div class="detail-title">Googleフォームと連動した社内申請・承認フローの自動化</div>
+          <p class="detail-meta">Google Apps Script</p>
+          <p class="detail-body">経費精算や備品購入などの社内申請をGoogleフォームで受け付け、送信と同時に承認者の社内チャット（Google ChatやSlack）へ通知を飛ばします。確認から承認までのタイムラグをなくし、進捗状況もスプレッドシートで自動管理できます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>申請用Googleフォームと回答記録シート</li>
+                <li>承認ルートと判定基準（承認者の指定）</li>
+                <li>ステータス管理列（未承認／承認／却下）</li>
+                <li>却下（差し戻し）発生時の処理ルール</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>Googleフォームからの申請送信（onFormSubmit）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>記録シートのステータス更新、およびGoogle Chat／メールへの判定通知</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  <!-- ==============================================
+       Slide 19: 詳細 G3 / G4 (theme-pink)
+       ============================================== -->
+  <div class="slide theme-pink">
+    <div class="corner-tl"></div><div class="corner-br"></div>
+    <div class="slide-header">
+      <h2>詳細 G3 / G4</h2>
+    </div>
+    <div class="slide-content is-detail">
+      <div class="detail-wrap">
+        <div class="detail-card" id="G3">
+          <div class="detail-id">G3 <span class="pill pill-chk">GAS</span></div>
+          <div class="detail-title">定例会議のアジェンダ（議事録）自動生成と事前共有</div>
+          <p class="detail-meta">Google Apps Script</p>
+          <p class="detail-body">Googleカレンダーの定例予定をトリガーにして、会議の数日前に「前回の決定事項」や「今回のテンプレート」が記載された議事録（Googleドキュメント）を自動作成します。さらに参加者へリンクを自動通知し、事前の記入を促すことで会議時間を短縮します。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>対象とするGoogleカレンダーの予定名</li>
+                <li>議事録テンプレートURLおよび作成先フォルダURL</li>
+                <li>命名ルール（例：【YYYYMMDD】会議名）と参加者共有ルール</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>会議の〇日前（定時タイマー実行）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>作成先フォルダへの議事録ドキュメント生成＋参加者へのアクセス権限付与</dd>
+          </dl>
+        </div>
+        <div class="detail-card" id="G4">
+          <div class="detail-id">G4 <span class="pill pill-chk">GAS</span></div>
+          <div class="detail-title">社内タスクや提出物の期限リマインド自動送信</div>
+          <p class="detail-meta">Google Apps Script</p>
+          <p class="detail-body">スプレッドシート上の「タスク管理表」や「提出物リスト」をシステムが毎日チェックし、期日が迫っている、あるいは過ぎているのに「未完了」となっているメンバーにだけ、自動で催促のチャットやメールを送ります。管理者がわざわざ個別に催促する手間が省けます。</p>
+          <dl class="pto">
+            <dt>PREP <span>事前準備（何を参照するか）</span></dt>
+            <dd>
+              <ul>
+                <li>タスク管理シート（期日列／担当者メールアドレス列／完了フラグ列）</li>
+                <li>リマインド送付条件（期日〇日前／期限超過）</li>
+              </ul>
+            </dd>
+            <dt>TRIGGER <span>きっかけ（いつ始まるか）</span></dt>
+            <dd>指定の実行タイミング（例：毎日朝9時）</dd>
+            <dt>OUTPUT <span>出力（何ができあがるか）</span></dt>
+            <dd>担当者への催促通知（メール または Google Chat Webhook）</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>ピザ会</div>
+    </div>
+  </div>
+
+  </div><!-- /.stage -->
+
+  <div class="hud hud-progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <div class="hud hud-meta" id="counter">1 / 1</div>
+  <div class="hud hud-help">? で操作</div>
+
+  <script src="deck.js"></script>
+  <script>
+    document.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.stopPropagation(); });
+    });
+  </script>
+</body>
+</html>
